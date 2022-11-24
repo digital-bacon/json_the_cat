@@ -6,15 +6,15 @@ const fetchBreedDescription = require('./breedFetcher');
  * arguments that were provided in the command line
  * @returns {Array} The arguments
  */
- const argV = (argumentsOnly) => argumentsOnly ? process.argv.slice(2) : process.argv;
+const argV = (argumentsOnly) => argumentsOnly ? process.argv.slice(2) : process.argv;
 
- const commandLineArgs = argV(true);
- const breedName = commandLineArgs[0];
- const callback = (error, desc) => {
+const commandLineArgs = argV(true);
+const breedName = commandLineArgs[0];
+const callback = (error, desc) => {
   if (error) {
     console.log('Error fetch details:', error);
     return;
   } console.log(desc);
-}
+};
  
- fetchBreedDescription(breedName, callback);
+fetchBreedDescription(breedName, callback);
