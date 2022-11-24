@@ -23,15 +23,17 @@ const parseJSON = (stringJSON) => {
   });
 }
 
-// const isValidJSON = (stringJSON) => {
-//   try {
-//     JSON.parse(stringJSON);
-//     return true;
-//   } catch {
-//     return false;
-//   }
-// }
-const url = 'https://api.thecatapi.com/v1/breeds/search?q=bengal';
+/**
+ * Function that returns command line arguments in Node
+ * @param {boolean} argumentsOnly Set to `true` to only return the
+ * arguments that were provided in the command line
+ * @returns {Array} The arguments
+ */
+const argV = (argumentsOnly) => argumentsOnly ? process.argv.slice(2) : process.argv;
+
+const commandLineArgs = argV(true);
+const breedRequested = commandLineArgs[0];
+const url = 'https://api.thecatapi.com/v1/breeds/search' + '?q=' + breedRequested;
 makeRequest(url)
   .then((responseBody) => parseJSON(responseBody))
     .then((parsedJSON) => console.log(parsedJSON))
