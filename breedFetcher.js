@@ -1,11 +1,11 @@
 const request = require('request');
-const inspect = require('util').inspect;
 
 const makeRequest = (url) => {
   return new Promise((resolve, reject) => {
     request(url, (error, response, body) => {
+      const data = {error, response, body};
       if (!error) {
-        return resolve(body);
+        return resolve(data);
       }
       return reject(error);
     });
@@ -13,14 +13,18 @@ const makeRequest = (url) => {
 };
 
 const parseJSON = (stringJSON) => {
-  return new Promise((resolve, reject) => {
-    try {
-      const data = JSON.parse(stringJSON);
-      return resolve(data);
-    } catch (error) {
-      return reject(error);
-    };
-  });
+  try {
+    const data = JSON.parse(stringJSON);
+    return data;
+  } catch (error) {
+    return error;
+  }
+}
+
+const isCatAPIBreedFound = (requestBody) => {
+  // The CatAPI returns an empty object if there's an error
+  const breedWasFound = requestBody !== '[]';
+  return breedWasFound;
 }
 
 /**
@@ -34,8 +38,16 @@ const argV = (argumentsOnly) => argumentsOnly ? process.argv.slice(2) : process.
 const commandLineArgs = argV(true);
 const breedRequested = commandLineArgs[0];
 const url = 'https://api.thecatapi.com/v1/breeds/search' + '?q=' + breedRequested;
+
 makeRequest(url)
-  .then((responseBody) => parseJSON(responseBody))
-    .then((parsedJSON) => console.log(parsedJSON))
-  .catch((error) => console.log(error))
+  .then((requestData) => {
+    const breedWasFound = isCatAPIBreedFound(requestData.body);
+    if (breedWasFound === false) {
+      console.log(`nothing was returned`);
+    } else {
+      const parsedJSON = parseJSON(requestData.body);
+      console.log(parsedJSON)
+    }
+  })
+  .catch((error) => console.log(`there was an error: ${error}`))
   .finally(() => console.log('🐱🐱 MEOW 🐱🐱 All done!'));
