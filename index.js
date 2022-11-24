@@ -10,11 +10,11 @@ const argV = (argumentsOnly) => argumentsOnly ? process.argv.slice(2) : process.
 
 const commandLineArgs = argV(true);
 const breedName = commandLineArgs[0];
-const callback = (error, desc) => {
+
+fetchBreedDescription(breedName, (error, desc) => {
   if (error) {
     console.log('Error fetch details:', error);
     return;
-  } console.log(desc);
-};
- 
-fetchBreedDescription(breedName, callback);
+  } 
+  console.log(desc);
+});

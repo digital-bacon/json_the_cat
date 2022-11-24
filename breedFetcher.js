@@ -7,13 +7,12 @@ const fetchBreedDescription = (breedName, callback) => {
       callback(error, null);
     } else {
       if (body === '[]') {
-        error = 'Breed not found';
-        callback(error, null);
-        return;
+        return callback(null, 'Breed not found');
+      } else {
+        const jsonParsed = JSON.parse(body);
+        const breedDescription = jsonParsed[0].description;
+        return callback(null, breedDescription);
       }
-      const jsonParsed = JSON.parse(body);
-      callback(error, jsonParsed);
-      console.log(jsonParsed[0].description);
     }
   });
 };
